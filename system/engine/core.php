@@ -23,27 +23,60 @@ class HF_Core
         $this->config = array_merge($config, $newconfig);
         if ($this->config["USE_H20_TPL"])
             $this->tpl = new H2o(null, array(
-                "searchpath" => getcwd() . "/application/views/", "cache_dir" => "application/tmp/",
+                "searchpath" => getcwd() . "/application/views/",
+                "cache_dir" => "application/tmp/",
+                'cache' => 'file'
             ));
         set_error_handler("HF_Core::error_handler");
         $this->findController();
 	}
+
+    public function siteURL()
+    {
+        if (isvarset($this->config["SITE_URL"]))
+        {
+            return $this->config["SITE_URL"];
+        }
+        $path = explode("/", $_SERVER["REQUEST_URI"]);
+        $path = array_filter($path, 'strlen');
+        if (count($path) == 0)
+        {
+            return  $_SERVER["HTTP_HOST"] . "/";
+        } else {
+            if (in_array($this->classname, $path))
+            {
+                $newpath = implode("/", array_splice($path, 0, -2));
+                return $_SERVER["HTTP_HOST"] . "/" . $newpath . "/";
+            } else {
+                $newpath = implode("/", $path);
+                return $_SERVER["HTTP_HOST"] . "/" . $newpath . "/";
+            }
+        }
+    }
 	
 	private function findController()
 	{
         try
         {
-            $request = $_SERVER["PHP_SELF"];
-            $splitreq = explode("/", $request);
-            $request = "";
-            for($i = 0; $i < count($splitreq); $i++)
+            if (isvarset($_SERVER["PATH_INFO"]))
             {
-                if ($splitreq[$i] == "index.php")
+                $request = $_SERVER["PATH_INFO"];
+                //$request = $_SERVER["PHP_SELF"];
+                $splitreq = explode("/", $request);
+                /*$request = "";
+                for($i = 0; $i < count($splitreq); $i++)
                 {
-                    $request = implode("/", array_splice($splitreq, $i+1));
-                }
+                    if ($splitreq[$i] == "index.php")
+                    {
+                        $request = implode("/", array_splice($splitreq, $i+1));
+                    }
+                }*/
+                //print $request;
+                //$request = substr($request, 1);
+                //$request = substr($request, 0, -1);
+            } else {
+                $request = "";
             }
-
             if ($request == "" || $request == "/")
             {
                 require("application/controllers/" . $this->config["DEFAULT_ROUTE"] . ".php");
@@ -74,7 +107,9 @@ class HF_Core
                     continue;
                 }
 
-                $this->load404Controller();
+                include($path . $this->config["DEFAULT_ROUTE"] . ".php");
+                $this->loadController(new $this->config["DEFAULT_ROUTE"]($this->config, $this, $this->tpl), $this->config["DEFAULT_ROUTE"], "index");
+                //$this->load404Controller();
                 break;
                 // throw exception controller not found
             }

@@ -19,6 +19,9 @@ function vdump() {
     foreach ($args as $arg)
         var_dump($arg);
 
+    var_dump($_SERVER);
+    var_dump($_COOKIE);
+
     $str = ob_get_contents();
 
     ob_end_clean();

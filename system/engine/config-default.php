@@ -10,5 +10,6 @@ $config["SMTP_FROM"] = "HF-noreply@yoursite.com";
 $config["DEBUG"] = true;
 $config["USE_HF_SMTP"] = true;
 $config["SITE_NAME"] = "default";
+$config["SITE_URL"] = "";
 
 return $config;
