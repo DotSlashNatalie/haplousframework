@@ -169,7 +169,7 @@ class HF_Core
             $numOfReqPara = $call->getNumberOfRequiredParameters();
             $numOfOptPara = $call->getNumberOfParameters() - $numOfReqPara;
             $remainparas = count($this->args) - $numOfReqPara;
-            if ($remainparas >= 0 && $remainparas <= $numOfOptPara)
+            if ($numOfReqPara == 0 || ($remainparas >= 0 && $remainparas <= $numOfOptPara))
             {
                 $call->invokeArgs($this->class, $this->args);
             }
