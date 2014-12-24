@@ -12,9 +12,11 @@ class HF_Core
 	private $args = array();
     private $config = array();
     private $tpl;
+    private $starttime;
 	
 	public function __construct()
 	{
+        $this->starttime = microtime(true);
         $config = include("system/engine/config-default.php");
         if (is_file("application/config.php"))
         {
@@ -30,6 +32,11 @@ class HF_Core
         set_error_handler("HF_Core::error_handler");
         $this->findController();
 	}
+
+    public function getRuntime()
+    {
+        return $this->starttime - microtime(true);
+    }
 
     public function siteURL()
     {
