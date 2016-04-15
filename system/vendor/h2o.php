@@ -1,4 +1,5 @@
 <?php
+
 define('H2O_VERSION', '0.3');
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 defined('H2O_ROOT') or define('H2O_ROOT', dirname(__FILE__) . DS);
@@ -10,6 +11,7 @@ require H2O_ROOT.'h2o/tags.php';
 require H2O_ROOT.'h2o/errors.php';
 require H2O_ROOT.'h2o/filters.php';
 require H2O_ROOT.'h2o/context.php';
+require H2O_ROOT.'h2o/parser.php';
 
 /**
  * Example:
